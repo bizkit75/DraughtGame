@@ -13,7 +13,7 @@ import android.view.View;
 public class Board extends View {
 
     int GameSize = 8;
-    int [][] matrice;
+    String[][] MatriceJeu = new String[2][2];
 
     public Board(Context context) {
        super(context);
@@ -38,7 +38,7 @@ public class Board extends View {
         float WIDTH = getWidth();
         Paint paint =  new Paint();
 
-        String[][] MatriceJeu = new String[2][2];
+
         MatriceJeu[1][1] = "Pion";
 
         paint.setColor(Color.DKGRAY);
@@ -66,10 +66,9 @@ public class Board extends View {
                 if (i == 1 && y == 1) {
 
                     if (MatriceJeu[i][y] == "Pion") {
-                        System.out.println("TEST 1");
                         paint.setColor(Color.CYAN);
-                        canvas.drawCircle((float) (WIDTH * (i * 0.125)) + 50, (float) (HEIGHT * ((y) * 0.125) - ((HEIGHT * ((y) * 0.125)/2))),
-                                50, paint);
+                        canvas.drawCircle((float) ((WIDTH * (i * 0.125)) + (((HEIGHT * (i * 0.125))) * 0.4)),
+                                (float) (HEIGHT * ((y) * 0.125) - ((HEIGHT * ((y) * 0.125)/2))), 20, paint);
                     }
                 }
 
@@ -97,12 +96,30 @@ public class Board extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int EventAction = event.getAction();
 
         int X = (int)event.getX();
         int Y = (int)event.getY();
 
-        System.out.println("X: " + X + " Y: " + Y);
-        return super.onTouchEvent(event);
+
+        switch (EventAction){
+            case MotionEvent.ACTION_DOWN:
+                // CHECK IF ON A SPAWN
+                System.out.println("X: " + X + " Y: " + Y);
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                // TOUCH & DRAG
+                System.out.println("X: " + X + " Y: " + Y);
+                break;
+            case MotionEvent.ACTION_UP:
+                // TOUCH DROPPING
+                System.out.println("X: " + X + " Y: " + Y);
+                break;
+        }
+
+        invalidate();
+        return true;
 
     }
 }
