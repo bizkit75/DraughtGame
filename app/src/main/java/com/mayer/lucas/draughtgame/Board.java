@@ -19,6 +19,7 @@ public class Board extends View {
     String[][] MatriceJeu = new String[9][9];
     List<Pion> Pion = new ArrayList<Pion>();
 
+
     public Board(Context context) {
         super(context);
         setFocusable(true);
@@ -73,20 +74,23 @@ public class Board extends View {
                             (float) (HEIGHT * ((y + 1) * 0.125)), paint);
                 }
 
-                if (i < 9 && y < 9 && (MatriceJeu[i][y] == "Pion" || MatriceJeu[i][y] == "Dame")) {
-                    if (MatriceJeu[i][y] == "Pion") {
-                        paint.setColor(Color.RED);
-                        canvas.drawCircle((float) (((WIDTH * ((i - 1) * 0.125)) + ((WIDTH * (i * 0.125)) - (WIDTH * ((i - 1) * 0.125))) / 2)),
-                                (float) (((HEIGHT * ((y - 1) * 0.125)) + ((HEIGHT * (y * 0.125)) - (HEIGHT * ((y - 1) * 0.125))) / 2)), 30, paint);
 
-                        po = new Position((float) (((WIDTH * ((i - 1) * 0.125)) + ((WIDTH * (i * 0.125)) - (WIDTH * ((i - 1) * 0.125))) / 2)),
-                                (float) (((HEIGHT * ((y - 1) * 0.125)) + ((HEIGHT * (y * 0.125)) - (HEIGHT * ((y - 1) * 0.125))) / 2)), 30);
-                        Pion.add(p = new Pion(i, y, po));
-                        p = null;
+
+                    if (i < 9 && y < 9 && (MatriceJeu[i][y] == "Pion" || MatriceJeu[i][y] == "Dame")) {
+                        if (MatriceJeu[i][y] == "Pion") {
+                            po = new Position((float) (((WIDTH * ((i - 1) * 0.125)) + ((WIDTH * (i * 0.125)) - (WIDTH * ((i - 1) * 0.125))) / 2)),
+                                    (float) (((HEIGHT * ((y - 1) * 0.125)) + ((HEIGHT * (y * 0.125)) - (HEIGHT * ((y - 1) * 0.125))) / 2)), 80);
+                            Pion.add(p = new Pion(i, y, po));
+                            p = null;
+                        }
+
                     }
-
-                }
             }
+        }
+        for(int i = 0; i  < Pion.size() ; i ++){
+            paint.setColor(Color.RED);
+            canvas.drawCircle(Pion.get(i).getP().getX() ,
+                    Pion.get(i).getP().getY(), Pion.get(i).getP().getR(), paint);
         }
     }
 
@@ -97,7 +101,7 @@ public class Board extends View {
 
     }
 
-    protected void init() {
+    static protected void init() {
         // SET
 
     }
@@ -120,9 +124,11 @@ public class Board extends View {
                 // TOUCH & DRAG
 
                 for(int i = 0; i  < Pion.size() ; i ++){
-                    if(((Pion.get(i).getP().getX() < X) && ((Pion.get(i).getP().getX() + Pion.get(i).getP().getR()) < X))
-                            && ((Pion.get(i).getP().getY() < X) && ((Pion.get(i).getP().getY() + Pion.get(i).getP().getR()) < X))){
-                        System.out.println("llooool");
+                    if(((Pion.get(i).getP().getX() < X) && ((X  < (Pion.get(i).getP().getX() + Pion.get(i).getP().getR()) * 1.2)))
+                            && ((Pion.get(i).getP().getY() < Y) && (Y < (Pion.get(i).getP().getY() + Pion.get(i).getP().getR()) * 1.2))){
+
+                        Pion.get(i).getP().setX(X);
+                        Pion.get(i).getP().setY(Y);
                     }
                 }
                 //System.out.println("X: " + X + " Y: " + Y);
@@ -130,6 +136,7 @@ public class Board extends View {
             case MotionEvent.ACTION_UP:
                 // TOUCH DROPPING
                 //System.out.println("X: " + X + " Y: " + Y);
+                System.out.println("STOp");
                 break;
         }
 
