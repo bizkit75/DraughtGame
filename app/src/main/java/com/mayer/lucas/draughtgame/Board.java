@@ -10,10 +10,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Board extends View {
 
-    int GameSize = 8;
+    int GameSize = 9;
     String[][] MatriceJeu = new String[9][9];
+    List<Pion> Pion = new ArrayList<Pion>();
 
     public Board(Context context) {
         super(context);
@@ -37,8 +41,10 @@ public class Board extends View {
         float HEIGHT = getHeight();
         float WIDTH = getWidth();
         Paint paint = new Paint();
+        Pion p;
+        Position po;
 
-
+        MatriceJeu[8][1] = "Pion";
         MatriceJeu[2][1] = "Pion";
         MatriceJeu[4][1] = "Pion";
         MatriceJeu[6][1] = "Pion";
@@ -68,11 +74,15 @@ public class Board extends View {
                 }
 
                 if (i < 9 && y < 9 && (MatriceJeu[i][y] == "Pion" || MatriceJeu[i][y] == "Dame")) {
-
                     if (MatriceJeu[i][y] == "Pion") {
                         paint.setColor(Color.RED);
                         canvas.drawCircle((float) (((WIDTH * ((i - 1) * 0.125)) + ((WIDTH * (i * 0.125)) - (WIDTH * ((i - 1) * 0.125))) / 2)),
                                 (float) (((HEIGHT * ((y - 1) * 0.125)) + ((HEIGHT * (y * 0.125)) - (HEIGHT * ((y - 1) * 0.125))) / 2)), 30, paint);
+
+                        po = new Position((float) (((WIDTH * ((i - 1) * 0.125)) + ((WIDTH * (i * 0.125)) - (WIDTH * ((i - 1) * 0.125))) / 2)),
+                                (float) (((HEIGHT * ((y - 1) * 0.125)) + ((HEIGHT * (y * 0.125)) - (HEIGHT * ((y - 1) * 0.125))) / 2)), 30);
+                        Pion.add(p = new Pion(i, y, po));
+                        p = null;
                     }
 
                 }
@@ -95,7 +105,7 @@ public class Board extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int EventAction = event.getAction();
-
+        Paint paint = new Paint();
         int X = (int) event.getX();
         int Y = (int) event.getY();
 
@@ -103,16 +113,23 @@ public class Board extends View {
         switch (EventAction) {
             case MotionEvent.ACTION_DOWN:
                 // CHECK IF ON A SPAWN
-                System.out.println("X: " + X + " Y: " + Y);
+               // System.out.println("X: " + X + " Y: " + Y);
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 // TOUCH & DRAG
-                System.out.println("X: " + X + " Y: " + Y);
+
+                for(int i = 0; i  < Pion.size() ; i ++){
+                    if(((Pion.get(i).getP().getX() < X) && ((Pion.get(i).getP().getX() + Pion.get(i).getP().getR()) < X))
+                            && ((Pion.get(i).getP().getY() < X) && ((Pion.get(i).getP().getY() + Pion.get(i).getP().getR()) < X))){
+                        System.out.println("llooool");
+                    }
+                }
+                //System.out.println("X: " + X + " Y: " + Y);
                 break;
             case MotionEvent.ACTION_UP:
                 // TOUCH DROPPING
-                System.out.println("X: " + X + " Y: " + Y);
+                //System.out.println("X: " + X + " Y: " + Y);
                 break;
         }
 
