@@ -14,6 +14,9 @@ public class Pion {
         this.y = y;
         this.p = p;
     }
+    public Pion( Position p){
+        this.p = p;
+    }
 
     public Position getP() {
         return p;
