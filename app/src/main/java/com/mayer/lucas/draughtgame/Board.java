@@ -15,7 +15,8 @@ import java.util.List;
 
 public class Board extends View {
 
-    int GameSize = 9;
+    int gameSize = 9;
+
 
     public void setMatriceJeu(int x, int y, String value) {
         MatriceJeu[x][y] = value;
@@ -23,10 +24,10 @@ public class Board extends View {
 
     String[][] MatriceJeu;
     List<Pion> Pion = new ArrayList<Pion>();
+    int indexPiece = -1;
 
 
     List<Position> listPostion = new ArrayList<Position>();
-    protected boolean firstboard;
     float X_Pawn = 0;
     float Y_Pawn = 0;
 
@@ -59,12 +60,12 @@ public class Board extends View {
         setBackgroundColor(Color.WHITE);
 
 
-        System.out.println("1. Ondraw: " + firstboard);
-
+        System.out.println("1. Ondraw: ");
         float HEIGHT = getHeight();
         float WIDTH = getWidth();
         Paint paint = new Paint();
         Position po;
+
 
         if (MatriceJeu != null && MatriceJeu.length > 0) {
 
@@ -80,24 +81,30 @@ public class Board extends View {
             MatriceJeu[7][2] = "Pion";
             MatriceJeu[5][5] = "aJouer";
 
-            for (int i = 0; i < GameSize; i++) {
-                for (int y = 0; y < GameSize; y++) {
+            for (int i = 0; i < gameSize; i++) {
+                for (int y = 0; y < gameSize; y++) {
                     if (i < 9 && y < 9) {
                         if (MatriceJeu[i][y] == "Pion") {
-                            System.out.println("1. MATRICE PION: " + firstboard);
                             po = new Position((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
                                     (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80);
                             Pion.add(new Pion(i, y, po));
                         }
-                    }
+                        if (MatriceJeu[i][y] == "aJouer") {
+                            paint.setColor(Color.YELLOW);
+                            canvas.drawCircle((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
+                                    (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80, paint);
 
+                            listPostion.add(new Position((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
+                                    (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80));
+                        }
+                    }
                 }
             }
         }
 
 
         paint.setColor(Color.DKGRAY);
-        for (int i = 0; i < GameSize; i++) {
+        for (int i = 0; i < gameSize; i++) {
             canvas.drawLine((float) (WIDTH * (i * 0.125)), HEIGHT, (float) (WIDTH * (i * 0.125)), 0, paint);
             canvas.drawLine((float) ((WIDTH * (i * 0.125) + 1)), HEIGHT, (float) (WIDTH * (i * 0.125)) + 1, 0, paint);
             canvas.drawLine((float) ((WIDTH * (i * 0.125) + 2)), HEIGHT, (float) (WIDTH * (i * 0.125)) + 2, 0, paint);
@@ -106,29 +113,25 @@ public class Board extends View {
             canvas.drawLine(0, (float) (HEIGHT * (i * 0.125)) + 2, WIDTH, (float) (HEIGHT * (i * 0.125)) + 2, paint);
         }
 
-        for (int i = 0; i < GameSize; i++) {
-            for (int y = 0; y < GameSize; y++) {
+        for (int i = 0; i < gameSize; i++) {
+            for (int y = 0; y < gameSize; y++) {
                 if (((i + y) % 2) == 1) {
                     paint.setColor(Color.BLACK);
                     canvas.drawRect((float) (WIDTH * (i * 0.125)), (float) (HEIGHT * ((y) * 0.125)), (float) (WIDTH * ((i + 1) * 0.125)),
                             (float) (HEIGHT * ((y + 1) * 0.125)), paint);
                 }
 
-                if (MatriceJeu[i][y] == "aJouer") {
-                    paint.setColor(Color.YELLOW);
-                    canvas.drawCircle((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
-                            (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80, paint);
-
-                    listPostion.add(new Position((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
-                            (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80));
-
-                }
             }
         }
         for (int i = 0; i < Pion.size(); i++) {
             paint.setColor(Color.RED);
             canvas.drawCircle(Pion.get(i).getP().getX(),
                     Pion.get(i).getP().getY(), Pion.get(i).getP().getR(), paint);
+        }
+        for (int i = 0; i < listPostion.size(); i++) {
+            paint.setColor(Color.YELLOW);
+            canvas.drawCircle(listPostion.get(i).getX(),
+                    listPostion.get(i).getY(), listPostion.get(i).getR(), paint);
         }
     }
 
@@ -138,77 +141,64 @@ public class Board extends View {
 
 
     }
-    int indicePawn = 0;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int EventAction = event.getAction();
-        Paint paint = new Paint();
         int X = (int) event.getX();
         int Y = (int) event.getY();
-        Position pos;
-
-
 
         switch (EventAction) {
-
             case MotionEvent.ACTION_DOWN:
                 // CHECK IF ON A SPAWN
-
                 for (int i = 0; i < Pion.size(); i++) {
                     if (inCircle(X, Y, Pion.get(i).getP().getX(), Pion.get(i).getP().getY(), Pion.get(i).getP().getR())) {
 
                         X_Pawn = Pion.get(i).getP().getX();
                         Y_Pawn = Pion.get(i).getP().getY();
-                        indicePawn = i;
-
+                        indexPiece = i;
 
                     }
                 }
-                System.out.println("1. ACTION_DOWN: " + indicePawn);
-                setMatriceJeu(Pion.get(indicePawn).getX(), Pion.get(indicePawn).getY(), "");
+                System.out.println("1. ACTION_DOWN: " + indexPiece);
+                if (indexPiece > -1) {
+                    setMatriceJeu(Pion.get(indexPiece).getX(), Pion.get(indexPiece).getY(), "");
+
+                }
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 // TOUCH & DRAG DU PION CLIQUE
-                 System.out.println("2. ACTION_MOVE: " + indicePawn);
 
-                System.out.println("2. Matrince: " + MatriceJeu[Pion.get(indicePawn).getX()][Pion.get(indicePawn).getY()] + "X: " + Pion.get(indicePawn).getX()+ "Y: " + Pion.get(indicePawn).getY());
-                firstboard = true;
-                // System.out.println("1. inCircle: " + firstboard);
-                Pion.get(indicePawn).getP().setX(X);
-                Pion.get(indicePawn).getP().setY(Y);
+                if (indexPiece > -1) {
+                    Pion.get(indexPiece).getP().setX(X);
+                    Pion.get(indexPiece).getP().setY(Y);
 
-                invalidate();
-
+                    System.out.println("2. ACTION_MOVE: ");
+                    invalidate();
+                }
 
                 break;
             case MotionEvent.ACTION_UP:
                 // TOUCH DROPPING
-                firstboard = true;
-                for (int i = 0; i < listPostion.size(); i++) {
-                    if (inCircle(Pion.get(indicePawn).getP().getX(), Pion.get(indicePawn).getP().getY(),
-                            listPostion.get(i).getX(), listPostion.get(i).getY(), listPostion.get(i).getR())) {
-                        System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-
+                System.out.println("3. ACTION_UP: ");
+                if (indexPiece > -1) {
+                    for (int i = 0; i < listPostion.size(); i++) {
+                        if (inCircle(Pion.get(indexPiece).getP().getX(), Pion.get(indexPiece).getP().getY(),
+                                listPostion.get(i).getX(), listPostion.get(i).getY(), listPostion.get(i).getR())) {
+                            Pion.get(indexPiece).getP().setX(listPostion.get(i).getX());
+                            Pion.get(indexPiece).getP().setY(listPostion.get(i).getY());
+                            listPostion.remove(i);
+                        } else {
+                            Pion.get(indexPiece).getP().setX(X_Pawn);
+                            Pion.get(indexPiece).getP().setY(Y_Pawn);
+                        }
                     }
+                    invalidate();
                 }
-
-
-                System.out.println("3. ACTION_UP: " + firstboard);
-                System.out.println(" XPAWN: " + X_Pawn);
-                System.out.println(" YPAWN: " + Y_Pawn);
-                Pion.get(indicePawn).getP().setX(X_Pawn);
-                Pion.get(indicePawn).getP().setY(Y_Pawn);
-
-
-                invalidate();
                 break;
-
-
         }
-
-
         return true;
 
     }
