@@ -43,8 +43,11 @@ public class Checkers implements Game {
     @Override
     public void start(int size) {
         plate = new Piece[size][];
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < size; ++i) {
             plate[i] = new Piece[size];
+            for (int j = 0; j < size; ++j)
+                plate[i][j] = Piece.Empty;
+        }
 
         player = Player.White;
     }
