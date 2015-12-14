@@ -30,6 +30,10 @@ public class Checkers implements Game {
         return empty(p.getX(), p.getY());
     }
 
+    private boolean inPlate(int x, int y) {
+        return x >= 0 && x <= size() - 1 && y >= 0 && y <= size() - 1;
+    }
+
     private boolean onBorder(int x, int y) {
         return x == 0 || x == size() - 1 || y == 0 || y == size() - 1;
     }
@@ -77,6 +81,9 @@ public class Checkers implements Game {
     private boolean canCapture(int x, int y, Player owner, int forward, int direction) {
         int ny = y + forward;
         int nx = x + direction;
+
+        if (!inPlate(nx, ny))
+            return false;
 
         if (onBorder(nx, ny))
             return false;
