@@ -46,7 +46,15 @@ public class Checkers implements Game {
         for (int i = 0; i < size; ++i) {
             plate[i] = new Piece[size];
             for (int j = 0; j < size; ++j)
-                plate[i][j] = Piece.Empty;
+                if ((i + j) % 2 == 0)
+                    if (i < 2)
+                        plate[i][j] = Piece.WPawn;
+                    else if (i >= size - 2)
+                        plate[i][j] = Piece.BPawn;
+                    else
+                        plate[i][j] = Piece.Empty;
+                else
+                    plate[i][j] = Piece.Empty;
         }
 
         player = Player.White;
