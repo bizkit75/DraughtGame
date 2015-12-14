@@ -34,6 +34,8 @@ public class Checkers implements Game {
         return x >= 0 && x <= size() - 1 && y >= 0 && y <= size() - 1;
     }
 
+    private boolean inPlate(Position p) { return inPlate(p.getX(), p.getY()); }
+
     private boolean onBorder(int x, int y) {
         return x == 0 || x == size() - 1 || y == 0 || y == size() - 1;
     }
@@ -107,6 +109,11 @@ public class Checkers implements Game {
 
         int forward = player == Player.White ? -1 : 1;
         int backward = -forward;
+
+        if (!inPlate(p))
+            return moves;
+        if (empty(p) || !pieceOf(p.getX(), p.getY(), turn()))
+            return moves;
 
         boolean capture = false;
 
