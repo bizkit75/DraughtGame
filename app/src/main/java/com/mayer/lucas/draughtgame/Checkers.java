@@ -77,7 +77,7 @@ public class Checkers implements Game {
     }
 
     private boolean canMove(int x, int y, int forward, int direction) {
-        return empty(x + direction, y + forward);
+        return inPlate(x + direction, y + forward) && empty(x + direction, y + forward);
     }
 
     private boolean canCapture(int x, int y, Player owner, int forward, int direction) {
@@ -107,7 +107,7 @@ public class Checkers implements Game {
     public Collection<Move> allowedMoves(Position p) {
         ArrayList<Move> moves = new ArrayList<>();
 
-        int forward = player == Player.White ? -1 : 1;
+        int forward = player == Player.White ? 1 : -1;
         int backward = -forward;
 
         if (!inPlate(p))
@@ -181,7 +181,7 @@ public class Checkers implements Game {
         set(move.getSrc(), Piece.Empty);
 
         if (   (player == Player.White && move.getDst().getY() == size() - 1)
-            || (player == Player.Black && move.getDst().getY() == 0))
+                || (player == Player.Black && move.getDst().getY() == 0))
             set(move.getDst(), player.queen());
 
         player = player.opponent();
