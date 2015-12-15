@@ -53,9 +53,9 @@ public class Checkers implements Game {
             plate[i] = new Piece[size];
             for (int j = 0; j < size; ++j)
                 if ((i + j) % 2 == 0)
-                    if (i < 2)
+                    if (j < 2)
                         plate[i][j] = Piece.WPawn;
-                    else if (i >= size - 2)
+                    else if (j >= size - 2)
                         plate[i][j] = Piece.BPawn;
                     else
                         plate[i][j] = Piece.Empty;
@@ -105,7 +105,7 @@ public class Checkers implements Game {
 
     @Override
     public Collection<Move> allowedMoves(Position p) {
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int forward = player == Player.White ? -1 : 1;
         int backward = -forward;
@@ -181,9 +181,10 @@ public class Checkers implements Game {
         set(move.getSrc(), Piece.Empty);
 
         if (   (player == Player.White && move.getDst().getY() == size() - 1)
-                || (player == Player.Black && move.getDst().getY() == 0))
+            || (player == Player.Black && move.getDst().getY() == 0))
             set(move.getDst(), player.queen());
 
+        player = player.opponent();
         return true;
     }
 
