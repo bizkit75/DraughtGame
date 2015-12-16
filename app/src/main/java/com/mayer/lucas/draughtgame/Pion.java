@@ -9,13 +9,24 @@ public class Pion {
     int x;
     Position p;
 
-    public Pion(int x, int y, Position p){
+    public String getColor() {
+        return color;
+    }
+
+    String color;
+
+    public Pion(int x, int y, Position p, String c){
         this.x = x;
         this.y = y;
         this.p = p;
+        this.color=c;
     }
     public Pion( Position p){
         this.p = p;
+    }
+    public Pion(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 
     public Position getP() {
