@@ -184,6 +184,9 @@ public class Checkers implements Game {
                 || (player == Player.Black && move.getDst().getY() == 0))
             set(move.getDst(), player.queen());
 
+        if (Math.abs(move.getSrc().getX() - move.getDst().getX()) == 2)
+            set(new Position((move.getSrc().getX() + move.getDst().getX()) / 2, (move.getSrc().getY() + move.getDst().getY()) / 2), Piece.Empty);
+
         player = player.opponent();
         return true;
     }
