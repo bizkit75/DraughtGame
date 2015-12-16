@@ -4,32 +4,42 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+
 public class Board extends View {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-    int gameSize = 9;
+        int size = 0;
+        int width = getWidth();
+        int height = getHeight();
 
-
-    public void setMatriceJeu(int x, int y, String value) {
-        MatriceJeu[x][y] = value;
+        if (width > height) {
+            size = height;
+        } else {
+            size = width;
+        }
+        setMeasuredDimension(size, size);
     }
 
-    String[][] MatriceJeu;
-    List<Pion> Pion = new ArrayList<Pion>();
-    int indexPiece = -1;
+    int gameSize = 9;
+    Game.Piece[][] plate;
 
+    List<Pion> Pions = new ArrayList<Pion>();
+    List<Game.Move> listPostion = new ArrayList<Game.Move>();
+    Collection<Game.Move> listAllowedMoves ;
+    int selectedPieceI = -1;
 
-    List<Position> listPostion = new ArrayList<Position>();
-    float X_Pawn = 0;
-    float Y_Pawn = 0;
+    boolean bool = true;
+
 
 
     public Board(Context context) {
@@ -58,81 +68,83 @@ public class Board extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         setBackgroundColor(Color.WHITE);
-
-
-        System.out.println("1. Ondraw: ");
+        System.out.println("1. Ondraw: " + bool);
         float HEIGHT = getHeight();
         float WIDTH = getWidth();
         Paint paint = new Paint();
         Position po;
 
-
-        if (MatriceJeu != null && MatriceJeu.length > 0) {
-
-        } else {
-            MatriceJeu = new String[9][9];
-            MatriceJeu[8][1] = "Pion";
-            MatriceJeu[2][1] = "Pion";
-            MatriceJeu[4][1] = "Pion";
-            MatriceJeu[6][1] = "Pion";
-            MatriceJeu[1][2] = "Pion";
-            MatriceJeu[3][2] = "Pion";
-            MatriceJeu[5][2] = "Pion";
-            MatriceJeu[7][2] = "Pion";
-            MatriceJeu[5][5] = "aJouer";
-
-            for (int i = 0; i < gameSize; i++) {
-                for (int y = 0; y < gameSize; y++) {
-                    if (i < 9 && y < 9) {
-                        if (MatriceJeu[i][y] == "Pion") {
-                            po = new Position((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
-                                    (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80);
-                            Pion.add(new Pion(i, y, po));
-                        }
-                        if (MatriceJeu[i][y] == "aJouer") {
-                            paint.setColor(Color.YELLOW);
-                            canvas.drawCircle((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
-                                    (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80, paint);
-
-                            listPostion.add(new Position((float) (((getWidth() * ((i - 1) * 0.125)) + ((getWidth() * (i * 0.125)) - (getWidth() * ((i - 1) * 0.125))) / 2)),
-                                    (float) (((getHeight() * ((y - 1) * 0.125)) + ((getHeight() * (y * 0.125)) - (getHeight() * ((y - 1) * 0.125))) / 2)), 80));
-                        }
-                    }
-                }
-            }
-        }
-
-
-        paint.setColor(Color.DKGRAY);
-        for (int i = 0; i < gameSize; i++) {
-            canvas.drawLine((float) (WIDTH * (i * 0.125)), HEIGHT, (float) (WIDTH * (i * 0.125)), 0, paint);
-            canvas.drawLine((float) ((WIDTH * (i * 0.125) + 1)), HEIGHT, (float) (WIDTH * (i * 0.125)) + 1, 0, paint);
-            canvas.drawLine((float) ((WIDTH * (i * 0.125) + 2)), HEIGHT, (float) (WIDTH * (i * 0.125)) + 2, 0, paint);
-            canvas.drawLine(0, (float) (HEIGHT * (i * 0.125)), WIDTH, (float) (HEIGHT * (i * 0.125)), paint);
-            canvas.drawLine(0, (float) (HEIGHT * (i * 0.125)) + 1, WIDTH, (float) (HEIGHT * (i * 0.125)) + 1, paint);
-            canvas.drawLine(0, (float) (HEIGHT * (i * 0.125)) + 2, WIDTH, (float) (HEIGHT * (i * 0.125)) + 2, paint);
-        }
-
-        for (int i = 0; i < gameSize; i++) {
-            for (int y = 0; y < gameSize; y++) {
+        //DRAW RECTANGLES
+        for (int i = 0; i < 8; i++) {
+            for (int y = 0; y < 8; y++) {
                 if (((i + y) % 2) == 1) {
                     paint.setColor(Color.BLACK);
                     canvas.drawRect((float) (WIDTH * (i * 0.125)), (float) (HEIGHT * ((y) * 0.125)), (float) (WIDTH * ((i + 1) * 0.125)),
                             (float) (HEIGHT * ((y + 1) * 0.125)), paint);
                 }
-
             }
         }
-        for (int i = 0; i < Pion.size(); i++) {
-            paint.setColor(Color.RED);
-            canvas.drawCircle(Pion.get(i).getP().getX(),
-                    Pion.get(i).getP().getY(), Pion.get(i).getP().getR(), paint);
+
+
+
+
+        plate =  MainActivity.game.getPlate();
+
+
+       double test = ((1 *0.125) * getHeight())/2;
+        double test2 = ((1 *0.125) * getWidth())/2;
+
+        if(bool){
+            for (int i = 0; i < plate.length; i++) {
+                for (int y = 0; y < plate.length; y++) {
+                        if ((plate[i][y].equals(Game.Piece.BPawn))) {
+                            po = new Position((float) (((i * 0.125) * getWidth()) + test2),
+                                        (float) (((y * 0.125) *  getHeight()) + test), 60);
+                                Pions.add(new Pion(i, y, po, "BPawn"));
+                        }
+                    if ((plate[i][y].equals(Game.Piece.WPawn))) {
+
+                        po = new Position((float) (((i * 0.125) * getWidth()) + test2),
+                                (float) (((y * 0.125) *  getHeight()) + test), 60);
+                        Pions.add(new Pion(i, y, po, "WPawn"));
+                    }
+
+                        if (plate[i][y] == Game.Piece.BQueen && plate[i][y] == Game.Piece.WQueen) {
+
+
+                        }
+                }
+                bool = false;
+            }
+            System.out.println("SIZE PION: " + Pions.size());
         }
-        for (int i = 0; i < listPostion.size(); i++) {
-            paint.setColor(Color.YELLOW);
-            canvas.drawCircle(listPostion.get(i).getX(),
-                    listPostion.get(i).getY(), listPostion.get(i).getR(), paint);
+
+
+        for (int i = 0; i < Pions.size(); i++) {
+            if(Pions.get(i).getColor() == "BPawn"){
+                paint.setColor(Color.RED);
+            }
+            if(Pions.get(i).getColor() == "WPawn"){
+                paint.setColor(Color.GRAY);
+            }
+
+            canvas.drawCircle(Pions.get(i).getP().getX(),
+                    Pions.get(i).getP().getY(), Pions.get(i).getP().getR(), paint);
         }
+
+        if(listAllowedMoves != null){
+
+            for(Game.Move move : listAllowedMoves){
+                paint.setColor(Color.YELLOW);
+                //System.out.println("allowed X:" + listAllowedMoves.iterator().next().getSrc().);
+               // System.out.println("allowed Y:" + );
+                //System.out.println("*****************");
+                canvas.drawCircle((float) ((( move.getDst().getX() * 0.125) * getWidth()) + test2),
+                        (float) ((( move.getDst().getY() * 0.125) *  getHeight()) + test), 60, paint);
+            }
+        }
+
+
     }
 
     @Override
@@ -147,60 +159,57 @@ public class Board extends View {
         int EventAction = event.getAction();
         int X = (int) event.getX();
         int Y = (int) event.getY();
+        float selectedPieceX = 0;
+        float selectedPieceY = 0;
 
         switch (EventAction) {
             case MotionEvent.ACTION_DOWN:
-                // CHECK IF ON A SPAWN
-                for (int i = 0; i < Pion.size(); i++) {
-                    if (inCircle(X, Y, Pion.get(i).getP().getX(), Pion.get(i).getP().getY(), Pion.get(i).getP().getR())) {
-
-                        X_Pawn = Pion.get(i).getP().getX();
-                        Y_Pawn = Pion.get(i).getP().getY();
-                        indexPiece = i;
-
+                bool = false;
+                for (int i = 0; i < Pions.size(); i++) {
+                    if (inCircle(X, Y, Pions.get(i).getP().getX(), Pions.get(i).getP().getY(), Pions.get(i).getP().getR())) {
+                        selectedPieceX = Pions.get(i).getP().getX();
+                        selectedPieceY = Pions.get(i).getP().getY();
+                        selectedPieceI = i;
+                        listAllowedMoves = MainActivity.game.allowedMoves(new Game.Position(Pions.get(i).getX(), Pions.get(i).getY()));
+                        System.out.println("Size of Collection allowedMoves" + listAllowedMoves.size());
                     }
                 }
-                System.out.println("1. ACTION_DOWN: " + indexPiece);
-                if (indexPiece > -1) {
-                    setMatriceJeu(Pion.get(indexPiece).getX(), Pion.get(indexPiece).getY(), "");
-
-                }
-
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                // TOUCH & DRAG DU PION CLIQUE
-
-                if (indexPiece > -1) {
-                    Pion.get(indexPiece).getP().setX(X);
-                    Pion.get(indexPiece).getP().setY(Y);
-
-                    System.out.println("2. ACTION_MOVE: ");
-                    invalidate();
+                System.out.println("2. ACTION_MOVE: " + selectedPieceI);
+                if (selectedPieceI > -1) {
+                    Pions.get(selectedPieceI).getP().setX(X);
+                    Pions.get(selectedPieceI).getP().setY(Y);
+                    bool = false;
                 }
-
                 break;
+
             case MotionEvent.ACTION_UP:
-                // TOUCH DROPPING
                 System.out.println("3. ACTION_UP: ");
-                if (indexPiece > -1) {
-                    for (int i = 0; i < listPostion.size(); i++) {
-                        if (inCircle(Pion.get(indexPiece).getP().getX(), Pion.get(indexPiece).getP().getY(),
-                                listPostion.get(i).getX(), listPostion.get(i).getY(), listPostion.get(i).getR())) {
-                            Pion.get(indexPiece).getP().setX(listPostion.get(i).getX());
-                            Pion.get(indexPiece).getP().setY(listPostion.get(i).getY());
-                            listPostion.remove(i);
-                        } else {
-                            Pion.get(indexPiece).getP().setX(X_Pawn);
-                            Pion.get(indexPiece).getP().setY(Y_Pawn);
-                        }
-                    }
-                    invalidate();
-                }
-                break;
-        }
-        return true;
+                for(Game.Move move : listAllowedMoves){
+                    double test = ((1 *0.125) * getHeight())/2;
+                    double test2 = ((1 *0.125) * getWidth())/2;
 
+                    float moveX = (float) (((move.getDst().getX() * 0.125) * getWidth()) + test);
+                    float moveY = (float) (((move.getDst().getY() * 0.125) *  getHeight()) + test2);
+
+                    if (inCircle(X, Y, moveX, moveY, Pions.get(selectedPieceI).getP().getR())) {
+                        MainActivity.game.move(move);
+                        System.out.println("OKK");
+                    }
+                }
+
+                Pions.clear();
+                listAllowedMoves.clear();
+                bool = true;
+                break;
+
+            //REMETTRE PIONS A 0 et passer bool à TRUE
+        }
+
+        invalidate();
+        return true;
     }
 
     private boolean inCircle(float x, float y, float circleCenterX, float circleCenterY, float circleRadius) {
@@ -213,4 +222,5 @@ public class Board extends View {
             return false;
         }
     }
+
 }

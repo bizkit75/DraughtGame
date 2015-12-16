@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Draught Game</string>
+    <string name="title_activity_intro">Intro</string>
 </resources>
