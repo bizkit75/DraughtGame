@@ -2,13 +2,20 @@ package com.mayer.lucas.draughtgame;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 public class Checkers implements Game {
     private Piece[][] plate;
     private Player player;
     private State state;
+    private Random random;
+    private Position chain;
 
-    public Checkers() { state = State.NotStarted; }
+    public Checkers() {
+        state = State.NotStarted;
+        random = new Random();
+        chain = null;
+    }
 
     public Piece get(int x, int y) {
         return plate[x][y];
@@ -53,9 +60,9 @@ public class Checkers implements Game {
             plate[i] = new Piece[size];
             for (int j = 0; j < size; ++j)
                 if ((i + j) % 2 == 0)
-                    if (j < 3)
+                    if (j < size / 2 - 1)
                         plate[i][j] = Piece.WPawn;
-                    else if (j >= size - 3)
+                    else if (j >= size / 2 + 1)
                         plate[i][j] = Piece.BPawn;
                     else
                         plate[i][j] = Piece.Empty;
@@ -103,6 +110,27 @@ public class Checkers implements Game {
         return true;
     }
 
+    private boolean canCapture(Position p, Player owner) {
+        int forward = player == Player.White ? 1 : -1;
+        int backward = -forward;
+
+        int x = p.getX();
+        int y = p.getY();
+
+        if (!inPlate(p))
+            return false;
+        if (empty(p) || !pieceOf(x, y, owner))
+            return false;
+
+        if (canCapture(x, y, owner, forward, -1) || canCapture(x, y, owner, forward, 1))
+            return true;
+
+        if (get(p).isQueen() && (canCapture(x, y, owner, backward, -1) || canCapture(x, y, owner, backward, 1)))
+            return true;
+
+        return false;
+    }
+
     @Override
     public Collection<Move> allowedMoves(Position p) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -113,6 +141,9 @@ public class Checkers implements Game {
         if (!inPlate(p))
             return moves;
         if (empty(p) || !pieceOf(p.getX(), p.getY(), turn()))
+            return moves;
+
+        if (chain != null && p.equals(chain))
             return moves;
 
         boolean capture = false;
@@ -184,15 +215,39 @@ public class Checkers implements Game {
                 || (player == Player.Black && move.getDst().getY() == 0))
             set(move.getDst(), player.queen());
 
-        if (Math.abs(move.getSrc().getX() - move.getDst().getX()) == 2)
+        boolean isCapture = Math.abs(move.getSrc().getX() - move.getDst().getX()) == 2;
+        if (isCapture)
             set(new Position((move.getSrc().getX() + move.getDst().getX()) / 2, (move.getSrc().getY() + move.getDst().getY()) / 2), Piece.Empty);
 
-        player = player.opponent();
+        if (isCapture && canCapture(move.getDst(), turn()))
+            chain = new Position(move.getDst());
+        else
+            player = player.opponent();
+
         return true;
     }
 
     @Override
     public State gameState() {
         return state;
+    }
+
+    private Collection<Move> allMoves() {
+        ArrayList<Move> moves = new ArrayList<>();
+
+        for (int x = 0; x < size(); ++x)
+            for (int y = 0; y < size(); ++y) {
+                Position p = new Position(x, y);
+                if (!empty(p) && pieceOf(x, y, turn()))
+                    moves.addAll(allowedMoves(p));
+            }
+
+        return moves;
+    }
+
+    @Override
+    public void playRandom() {
+        ArrayList<Move> moves = new ArrayList<>(allMoves());
+        move(moves.get(random.nextInt(moves.size())));
     }
 }
