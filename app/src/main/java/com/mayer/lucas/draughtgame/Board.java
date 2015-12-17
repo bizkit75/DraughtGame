@@ -39,7 +39,6 @@ public class Board extends View {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        invalidate();
 
     }
 
@@ -47,14 +46,14 @@ public class Board extends View {
         super(context, attrs);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        invalidate();
+
     }
 
     public Board(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        invalidate();
+
 
 
     }
@@ -187,21 +186,22 @@ public class Board extends View {
 
             case MotionEvent.ACTION_UP:
                 System.out.println("3. ACTION_UP: ");
-                for(Game.Move move : listAllowedMoves){
+                if (selectedPieceI > -1) {
+                    for(Game.Move move : listAllowedMoves){
+                        float moveX = (float) (((move.getDst().getX() * percent) * getWidth()) + calibrationHeight);
+                        float moveY = (float) (((move.getDst().getY() * percent) *  getHeight()) + calibrationWidth);
 
-                    float moveX = (float) (((move.getDst().getX() * percent) * getWidth()) + calibrationHeight);
-                    float moveY = (float) (((move.getDst().getY() * percent) *  getHeight()) + calibrationWidth);
-
-                    if (inCircle(X, Y, moveX, moveY, Pions.get(selectedPieceI).getP().getR())) {
-                        MainActivity.game.move(move);
-                        System.out.println("OKK");
+                        if (inCircle(X, Y, moveX, moveY, Pions.get(selectedPieceI).getP().getR())) {
+                            MainActivity.game.move(move);
+                        }
                     }
+                    listAllowedMoves.clear();
                 }
-
                 Pions.clear();
-                listAllowedMoves.clear();
                 bool = true;
                 break;
+
+
         }
 
         invalidate();
@@ -219,8 +219,4 @@ public class Board extends View {
         }
     }
 
-
-    public void changeBoard(){
-        invalidate();
-    }
 }
