@@ -60,9 +60,9 @@ public class Checkers implements Game {
             plate[i] = new Piece[size];
             for (int j = 0; j < size; ++j)
                 if ((i + j) % 2 == 0)
-                    if (j < size / 2 - 1)
+                    if (j < 3)
                         plate[i][j] = Piece.WPawn;
-                    else if (j >= size / 2 + 1)
+                    else if (j >= size - 3)
                         plate[i][j] = Piece.BPawn;
                     else
                         plate[i][j] = Piece.Empty;
