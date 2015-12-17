@@ -143,7 +143,7 @@ public class Checkers implements Game {
         if (empty(p) || !pieceOf(p.getX(), p.getY(), turn()))
             return moves;
 
-        if (chain != null && p.equals(chain))
+        if (chain != null && !p.equals(chain))
             return moves;
 
         boolean capture = false;
