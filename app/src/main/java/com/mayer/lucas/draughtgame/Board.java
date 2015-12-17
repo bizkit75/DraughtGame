@@ -16,18 +16,13 @@ import java.util.List;
 public class Board extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int size = 0;
-        int width = getWidth();
-        int height = getHeight();
-
-        if (width > height) {
-            size = height;
-        } else {
-            size = width;
-        }
+        // Set the dimension to the smaller of the 2 measures
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int size = width > height ? height : width;
         setMeasuredDimension(size, size);
+
+
     }
 
     int gameSize = 9;
@@ -61,6 +56,8 @@ public class Board extends View {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
+
+
     }
 
 
@@ -74,6 +71,7 @@ public class Board extends View {
         Paint paint = new Paint();
         Position po;
 
+        measure(getWidth()/2, getWidth()/2);
         //DRAW RECTANGLES
         for (int i = 0; i < 8; i++) {
             for (int y = 0; y < 8; y++) {
@@ -109,10 +107,17 @@ public class Board extends View {
                         Pions.add(new Pion(i, y, po, "WPawn"));
                     }
 
-                        if (plate[i][y] == Game.Piece.BQueen && plate[i][y] == Game.Piece.WQueen) {
-
+                        if (plate[i][y] == Game.Piece.BQueen) {
+                            po = new Position((float) (((i * 0.125) * getWidth()) + test2),
+                                    (float) (((y * 0.125) *  getHeight()) + test), 60);
+                            Pions.add(new Pion(i, y, po, "BQueen"));
 
                         }
+                    if(plate[i][y] == Game.Piece.WQueen){
+                        po = new Position((float) (((i * 0.125) * getWidth()) + test2),
+                                (float) (((y * 0.125) *  getHeight()) + test), 60);
+                        Pions.add(new Pion(i, y, po, "WQueen"));
+                    }
                 }
                 bool = false;
             }
@@ -126,6 +131,12 @@ public class Board extends View {
             }
             if(Pions.get(i).getColor() == "WPawn"){
                 paint.setColor(Color.GRAY);
+            }
+            if(Pions.get(i).getColor() == "WQueen"){
+                paint.setColor(Color.YELLOW);
+            }
+            if(Pions.get(i).getColor() == "BQueen"){
+                paint.setColor(Color.CYAN);
             }
 
             canvas.drawCircle(Pions.get(i).getP().getX(),
@@ -147,12 +158,7 @@ public class Board extends View {
 
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
 
-
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

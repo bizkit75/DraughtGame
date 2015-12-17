@@ -1,4 +1,24 @@
 <resources>
     <string name="app_name">Draught Game</string>
     <string name="title_activity_intro">Intro</string>
+    <string-array name="sizeBoard">
+        <item>6x6</item>
+        <item>8x8</item>
+        <item>10x10</item>
+        <item>12x12</item>
+        <item>14x14</item>
+        <item>16x16</item>
+        <item>18x18</item>
+        <item>20x20</item>
+    </string-array>
+    <string-array name="randomShot">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
 </resources>
