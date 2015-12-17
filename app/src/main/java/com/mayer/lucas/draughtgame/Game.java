@@ -12,6 +12,11 @@ public interface Game {
             this.y = y;
         }
 
+        public Position(Position p) {
+            this.x = p.x;
+            this.y = p.y;
+        }
+
         public int getX() { return x; }
         public int getY() { return y; }
 
@@ -95,6 +100,10 @@ public interface Game {
                 return Player.White;
             else // if (this == BPawn || this == BQueen)
                 return Player.Black;
+        }
+
+        public boolean isQueen() {
+            return this == WQueen || this == BQueen;
         }
     }
 }

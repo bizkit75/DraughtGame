@@ -9,10 +9,12 @@ public class Checkers implements Game {
     private Player player;
     private State state;
     private Random random;
+    private Position chain;
 
     public Checkers() {
         state = State.NotStarted;
         random = new Random();
+        chain = null;
     }
 
     public Piece get(int x, int y) {
@@ -108,6 +110,27 @@ public class Checkers implements Game {
         return true;
     }
 
+    private boolean canCapture(Position p, Player owner) {
+        int forward = player == Player.White ? 1 : -1;
+        int backward = -forward;
+
+        int x = p.getX();
+        int y = p.getY();
+
+        if (!inPlate(p))
+            return false;
+        if (empty(p) || !pieceOf(x, y, owner))
+            return false;
+
+        if (canCapture(x, y, owner, forward, -1) || canCapture(x, y, owner, forward, 1))
+            return true;
+
+        if (get(p).isQueen() && (canCapture(x, y, owner, backward, -1) || canCapture(x, y, owner, backward, 1)))
+            return true;
+
+        return false;
+    }
+
     @Override
     public Collection<Move> allowedMoves(Position p) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -118,6 +141,9 @@ public class Checkers implements Game {
         if (!inPlate(p))
             return moves;
         if (empty(p) || !pieceOf(p.getX(), p.getY(), turn()))
+            return moves;
+
+        if (chain != null && p.equals(chain))
             return moves;
 
         boolean capture = false;
@@ -189,10 +215,15 @@ public class Checkers implements Game {
                 || (player == Player.Black && move.getDst().getY() == 0))
             set(move.getDst(), player.queen());
 
-        if (Math.abs(move.getSrc().getX() - move.getDst().getX()) == 2)
+        boolean isCapture = Math.abs(move.getSrc().getX() - move.getDst().getX()) == 2;
+        if (isCapture)
             set(new Position((move.getSrc().getX() + move.getDst().getX()) / 2, (move.getSrc().getY() + move.getDst().getY()) / 2), Piece.Empty);
 
-        player = player.opponent();
+        if (isCapture && canCapture(move.getDst(), turn()))
+            chain = new Position(move.getDst());
+        else
+            player = player.opponent();
+
         return true;
     }
 
