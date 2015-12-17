@@ -2,13 +2,18 @@ package com.mayer.lucas.draughtgame;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 public class Checkers implements Game {
     private Piece[][] plate;
     private Player player;
     private State state;
+    private Random random;
 
-    public Checkers() { state = State.NotStarted; }
+    public Checkers() {
+        state = State.NotStarted;
+        random = new Random();
+    }
 
     public Piece get(int x, int y) {
         return plate[x][y];
@@ -194,5 +199,24 @@ public class Checkers implements Game {
     @Override
     public State gameState() {
         return state;
+    }
+
+    private Collection<Move> allMoves() {
+        ArrayList<Move> moves = new ArrayList<>();
+
+        for (int x = 0; x < size(); ++x)
+            for (int y = 0; y < size(); ++y) {
+                Position p = new Position(x, y);
+                if (!empty(p) && pieceOf(x, y, turn()))
+                    moves.addAll(allowedMoves(p));
+            }
+
+        return moves;
+    }
+
+    @Override
+    public void playRandom() {
+        ArrayList<Move> moves = new ArrayList<>(allMoves());
+        move(moves.get(random.nextInt(moves.size())));
     }
 }

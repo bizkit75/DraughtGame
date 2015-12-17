@@ -53,6 +53,7 @@ public interface Game {
     Collection<Move> allowedMoves(Position p);
     boolean move(Move move);
     State gameState();
+    void playRandom();
 
     enum State {
         NotStarted,
