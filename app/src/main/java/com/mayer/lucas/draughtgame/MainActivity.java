@@ -15,13 +15,14 @@ import java.nio.ByteOrder;
 
 public class MainActivity extends Activity {
     static Game game;
-    int size = 8;
+
+    static int size = 8;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         game = new Checkers();
-
+        final Board board = new Board(getBaseContext());
         final Spinner spinnerSize = (Spinner)findViewById(R.id.spinnerSize);
         Spinner spinnerShot = (Spinner)findViewById(R.id.spinnerShot);
 
@@ -55,7 +56,7 @@ public class MainActivity extends Activity {
 
                 game = new Checkers();
                 game.start(size);
-
+               System.out.println("hehe");
             }
 
             public void onNothingSelected(AdapterView<?> adapterView) {

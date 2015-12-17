@@ -25,14 +25,12 @@ public class Board extends View {
 
     }
 
-    int gameSize = 9;
-    Game.Piece[][] plate;
 
+    Game.Piece[][] plate;
     List<Pion> Pions = new ArrayList<Pion>();
     List<Game.Move> listPostion = new ArrayList<Game.Move>();
     Collection<Game.Move> listAllowedMoves ;
     int selectedPieceI = -1;
-
     boolean bool = true;
 
 
@@ -41,6 +39,7 @@ public class Board extends View {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
+        invalidate();
 
     }
 
@@ -48,14 +47,14 @@ public class Board extends View {
         super(context, attrs);
         setFocusable(true);
         setFocusableInTouchMode(true);
-
+        invalidate();
     }
 
     public Board(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setFocusable(true);
         setFocusableInTouchMode(true);
-
+        invalidate();
 
 
     }
@@ -65,57 +64,54 @@ public class Board extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         setBackgroundColor(Color.WHITE);
-        System.out.println("1. Ondraw: " + bool);
         float HEIGHT = getHeight();
         float WIDTH = getWidth();
+
+        float percent = (float) (1f / MainActivity.size);
+        double calibrationHeight = ((1 * percent) * HEIGHT)/2;
+        double calibrationWidth = ((1 * percent) * WIDTH)/2;
+        int radiusPiece = (int) ((1f / MainActivity.size) * 350);
+
         Paint paint = new Paint();
         Position po;
 
-        measure(getWidth()/2, getWidth()/2);
         //DRAW RECTANGLES
-        for (int i = 0; i < 8; i++) {
-            for (int y = 0; y < 8; y++) {
+        for (int i = 0; i < MainActivity.size; i++) {
+            for (int y = 0; y < MainActivity.size; y++) {
                 if (((i + y) % 2) == 1) {
                     paint.setColor(Color.BLACK);
-                    canvas.drawRect((float) (WIDTH * (i * 0.125)), (float) (HEIGHT * ((y) * 0.125)), (float) (WIDTH * ((i + 1) * 0.125)),
-                            (float) (HEIGHT * ((y + 1) * 0.125)), paint);
+                    canvas.drawRect((float) (WIDTH * (i * percent)), (float) (HEIGHT * ((y) * percent)), (float) (WIDTH * ((i + 1) * percent)),
+                            (float) (HEIGHT * ((y + 1) * percent)), paint);
                 }
             }
         }
 
-
-
-
         plate =  MainActivity.game.getPlate();
-
-
-       double test = ((1 *0.125) * getHeight())/2;
-        double test2 = ((1 *0.125) * getWidth())/2;
 
         if(bool){
             for (int i = 0; i < plate.length; i++) {
                 for (int y = 0; y < plate.length; y++) {
                         if ((plate[i][y].equals(Game.Piece.BPawn))) {
-                            po = new Position((float) (((i * 0.125) * getWidth()) + test2),
-                                        (float) (((y * 0.125) *  getHeight()) + test), 60);
+                            po = new Position((float) (((i * percent) * getWidth()) + calibrationWidth),
+                                        (float) (((y * percent) *  getHeight()) + calibrationHeight), radiusPiece);
                                 Pions.add(new Pion(i, y, po, "BPawn"));
                         }
                     if ((plate[i][y].equals(Game.Piece.WPawn))) {
 
-                        po = new Position((float) (((i * 0.125) * getWidth()) + test2),
-                                (float) (((y * 0.125) *  getHeight()) + test), 60);
+                        po = new Position((float) (((i * percent) * getWidth()) + calibrationWidth),
+                                (float) (((y * percent) *  getHeight()) + calibrationHeight), radiusPiece);
                         Pions.add(new Pion(i, y, po, "WPawn"));
                     }
 
                         if (plate[i][y] == Game.Piece.BQueen) {
-                            po = new Position((float) (((i * 0.125) * getWidth()) + test2),
-                                    (float) (((y * 0.125) *  getHeight()) + test), 60);
+                            po = new Position((float) (((i * percent) * getWidth()) + calibrationWidth),
+                                    (float) (((y * percent) *  getHeight()) + calibrationHeight), radiusPiece);
                             Pions.add(new Pion(i, y, po, "BQueen"));
 
                         }
                     if(plate[i][y] == Game.Piece.WQueen){
-                        po = new Position((float) (((i * 0.125) * getWidth()) + test2),
-                                (float) (((y * 0.125) *  getHeight()) + test), 60);
+                        po = new Position((float) (((i * percent) * getWidth()) + calibrationWidth),
+                                (float) (((y * percent) *  getHeight()) + calibrationHeight), radiusPiece);
                         Pions.add(new Pion(i, y, po, "WQueen"));
                     }
                 }
@@ -147,18 +143,13 @@ public class Board extends View {
 
             for(Game.Move move : listAllowedMoves){
                 paint.setColor(Color.YELLOW);
-                //System.out.println("allowed X:" + listAllowedMoves.iterator().next().getSrc().);
-               // System.out.println("allowed Y:" + );
-                //System.out.println("*****************");
-                canvas.drawCircle((float) ((( move.getDst().getX() * 0.125) * getWidth()) + test2),
-                        (float) ((( move.getDst().getY() * 0.125) *  getHeight()) + test), 60, paint);
+                canvas.drawCircle((float) ((( move.getDst().getX() * percent) * getWidth()) + calibrationWidth),
+                        (float) ((( move.getDst().getY() * percent) *  getHeight()) + calibrationHeight), radiusPiece, paint);
             }
         }
 
 
     }
-
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -167,6 +158,9 @@ public class Board extends View {
         int Y = (int) event.getY();
         float selectedPieceX = 0;
         float selectedPieceY = 0;
+        float percent = (float) (1f / MainActivity.size);
+        double calibrationHeight = ((1 *percent) * getHeight())/2;
+        double calibrationWidth = ((1 *percent) * getWidth())/2;
 
         switch (EventAction) {
             case MotionEvent.ACTION_DOWN:
@@ -194,11 +188,9 @@ public class Board extends View {
             case MotionEvent.ACTION_UP:
                 System.out.println("3. ACTION_UP: ");
                 for(Game.Move move : listAllowedMoves){
-                    double test = ((1 *0.125) * getHeight())/2;
-                    double test2 = ((1 *0.125) * getWidth())/2;
 
-                    float moveX = (float) (((move.getDst().getX() * 0.125) * getWidth()) + test);
-                    float moveY = (float) (((move.getDst().getY() * 0.125) *  getHeight()) + test2);
+                    float moveX = (float) (((move.getDst().getX() * percent) * getWidth()) + calibrationHeight);
+                    float moveY = (float) (((move.getDst().getY() * percent) *  getHeight()) + calibrationWidth);
 
                     if (inCircle(X, Y, moveX, moveY, Pions.get(selectedPieceI).getP().getR())) {
                         MainActivity.game.move(move);
@@ -210,8 +202,6 @@ public class Board extends View {
                 listAllowedMoves.clear();
                 bool = true;
                 break;
-
-            //REMETTRE PIONS A 0 et passer bool à TRUE
         }
 
         invalidate();
@@ -229,4 +219,8 @@ public class Board extends View {
         }
     }
 
+
+    public void changeBoard(){
+        invalidate();
+    }
 }
