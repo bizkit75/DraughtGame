@@ -12,6 +12,11 @@ public interface Game {
             this.y = y;
         }
 
+        public Position(Position p) {
+            this.x = p.x;
+            this.y = p.y;
+        }
+
         public int getX() { return x; }
         public int getY() { return y; }
 
@@ -53,6 +58,7 @@ public interface Game {
     Collection<Move> allowedMoves(Position p);
     boolean move(Move move);
     State gameState();
+    void playRandom();
 
     enum State {
         NotStarted,
@@ -94,6 +100,10 @@ public interface Game {
                 return Player.White;
             else // if (this == BPawn || this == BQueen)
                 return Player.Black;
+        }
+
+        public boolean isQueen() {
+            return this == WQueen || this == BQueen;
         }
     }
 }
