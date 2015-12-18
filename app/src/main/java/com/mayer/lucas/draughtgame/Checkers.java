@@ -11,6 +11,17 @@ public class Checkers implements Game {
     private Random random;
     private Position chain;
 
+    public static void setCount(int count) {
+        Checkers.count = count;
+    }
+
+    private static int count = 0;
+    public static int getCount() {
+        return count;
+    }
+
+
+
     public Checkers() {
         state = State.NotStarted;
         random = new Random();
@@ -75,7 +86,7 @@ public class Checkers implements Game {
 
     @Override
     public Player turn() {
-        return player;
+        count ++; return player;
     }
 
     @Override

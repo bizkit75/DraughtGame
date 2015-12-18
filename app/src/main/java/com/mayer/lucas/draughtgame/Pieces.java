@@ -3,7 +3,7 @@ package com.mayer.lucas.draughtgame;
 /**
  * Created by lulz on 28/11/2015.
  */
-public class Pion {
+public class Pieces {
 
     int y;
     int x;
@@ -15,16 +15,16 @@ public class Pion {
 
     String color;
 
-    public Pion(int x, int y, Position p, String c){
+    public Pieces(int x, int y, Position p, String c){
         this.x = x;
         this.y = y;
         this.p = p;
         this.color=c;
     }
-    public Pion( Position p){
+    public Pieces(Position p){
         this.p = p;
     }
-    public Pion(int x, int y){
+    public Pieces(int x, int y){
         this.x = x;
         this.y = y;
     }

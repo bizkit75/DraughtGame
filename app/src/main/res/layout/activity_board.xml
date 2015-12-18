@@ -33,26 +33,7 @@
         android:id="@+id/spinnerSize"
         android:layout_below="@+id/textView3"
         android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3"
-        android:layout_alignBottom="@+id/spinnerShot" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Select random shot"
-        android:id="@+id/textView4"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinnerShot"
-        android:layout_below="@+id/textView4"
-        android:layout_alignLeft="@+id/textView4"
-        android:layout_alignStart="@+id/textView4" />
+        android:layout_alignEnd="@+id/textView3" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -60,39 +41,26 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Turn:"
         android:id="@+id/textView5"
-        android:layout_below="@+id/spinnerShot"
-        android:layout_toLeftOf="@+id/textViewTurn"
-        android:layout_toStartOf="@+id/textViewTurn" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:text="White"
         android:id="@+id/textViewTurn"
-        android:layout_alignTop="@+id/textViewTime"
+        android:layout_below="@+id/textView5"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Random shots"
+        android:id="@+id/button"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Time:"
-        android:id="@+id/textView7"
-        android:layout_alignTop="@+id/textViewTime"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textViewTime"
-        android:layout_below="@+id/spinnerSize"
-        android:layout_toRightOf="@+id/textView7"
-        android:layout_toEndOf="@+id/textView7" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/textViewTurn" />
 
 
 </RelativeLayout>
